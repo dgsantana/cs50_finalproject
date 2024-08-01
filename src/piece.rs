@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::color::palettes::css::*;
 
 use crate::common::BLOCK_SIZE;
 
@@ -96,16 +97,26 @@ impl From<PieceType> for [[i32; 2]; 4] {
 impl From<&PieceType> for Color {
     fn from(value: &PieceType) -> Self {
         match value {
-            PieceType::I => bevy::color::palettes::css::LIGHT_CYAN.into(),
-            PieceType::J => bevy::color::palettes::css::BLUE.into(),
-            PieceType::L => bevy::color::palettes::css::ORANGE.into(),
-            PieceType::O => bevy::color::palettes::css::YELLOW.into(),
-            PieceType::S => bevy::color::palettes::css::GREEN.into(),
-            PieceType::T => bevy::color::palettes::css::PURPLE.into(),
-            PieceType::Z => bevy::color::palettes::css::RED.into(),
+            PieceType::I => LIGHT_CYAN.into(),
+            PieceType::J => BLUE.into(),
+            PieceType::L => ORANGE.into(),
+            PieceType::O => YELLOW.into(),
+            PieceType::S => GREEN.into(),
+            PieceType::T => PURPLE.into(),
+            PieceType::Z => RED.into(),
         }
     }
 }
+
+const PIECES: [PieceType; 7] = [
+    PieceType::I,
+    PieceType::J,
+    PieceType::L,
+    PieceType::O,
+    PieceType::S,
+    PieceType::T,
+    PieceType::Z,
+];
 
 impl PieceType {
     /// Build a piece from the piece type

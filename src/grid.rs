@@ -1,0 +1,51 @@
+use bevy::prelude::*;
+
+use crate::common::{BLOCK_SIZE, BOARD_X, BOARD_Y, BORDER_COLOR, BORDER_SIZE};
+
+pub fn setup(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
+    let half_x = BOARD_X as f32 / 2.0;
+    let half_y = BOARD_Y as f32 / 2.0;
+    // Lots of trial and error to get the cup to look right
+    let side = half_x * BLOCK_SIZE - BORDER_SIZE / 2.0;
+    let bottom = half_y * BLOCK_SIZE + BORDER_SIZE;
+    let size_y = BOARD_Y as f32 * BLOCK_SIZE + 2.0 * BORDER_SIZE;
+    let size_x = BOARD_X as f32 * BLOCK_SIZE;
+    // Draw the cup
+    commands.spawn(SpriteBundle {
+        transform: Transform::from_xyz(-side, 0.0, 0.0).with_scale(Vec3::new(
+            BORDER_SIZE,
+            size_y,
+            0.0,
+        )),
+        sprite: Sprite {
+            color: BORDER_COLOR,
+            ..default()
+        },
+        ..default()
+    });
+    commands.spawn(SpriteBundle {
+        transform: Transform::from_xyz(side, 0.0, 0.0).with_scale(Vec3::new(
+            BORDER_SIZE,
+            size_y,
+            0.0,
+        )),
+        sprite: Sprite {
+            color: BORDER_COLOR,
+            ..default()
+        },
+        ..default()
+    });
+    commands.spawn(SpriteBundle {
+        transform: Transform::from_xyz(0.0, -bottom, 0.0).with_scale(Vec3::new(
+            size_x,
+            BORDER_SIZE,
+            0.0,
+        )),
+        sprite: Sprite {
+            color: BORDER_COLOR,
+            ..default()
+        },
+        ..default()
+    });
+}
