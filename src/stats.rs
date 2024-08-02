@@ -59,6 +59,7 @@ pub fn setup_score_ui(mut commands: Commands) {
                     .width(Val::Percent(35.0))
                     .height(Val::Percent(100.0))
                     .align_items(AlignItems::Center)
+                    .align_content(AlignContent::Center)
                     .justify_content(JustifyContent::Start);
                 column.row(|row| {
                     row.style().padding(UiRect::top(Val::Px(50.0)));
