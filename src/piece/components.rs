@@ -224,6 +224,7 @@ impl PieceType {
     }
 }
 
+/// A helper to help with the rotation of the pieces
 pub struct Piece {
     piece_type: PieceType,
     blocks: [Block; 4],
@@ -256,18 +257,12 @@ impl Piece {
     fn compute(&mut self) {
         let sum_x: i32 = self.blocks.iter().map(|b| b.x).sum();
         let sum_y: i32 = self.blocks.iter().map(|b| b.y).sum();
+        // Average of the x and y coordinates of the blocks
         self.pivot_x = sum_x / 4 - sum_y / 4;
         self.pivot_y = sum_x / 4 + sum_y / 4;
     }
 
-    /// Rotation is tricky, the pivot should be the first block, and then move the rest of the blocks
-    /// around it. Also, the rotation should be done in a 2D array, and then the blocks should be updated
-    /// with the new coordinates.
-    ///
-    /// The O piece should not rotate.
-    ///
-    /// The first block is the far leftmost block, and the rest of the blocks are rotated around it.
-    /// For example on Z we pass from [[3, 1], [4, 1], [4, 0], [5, 0]] to [[3,1], [3,0], [2,0], [2,-1]]
+    /// Rotate the blocks of the piece
     pub fn rotate_blocks(&self) -> [Block; 4] {
         let mut blocks = self.blocks;
         if self.piece_type == PieceType::O {
@@ -279,12 +274,14 @@ impl Piece {
         blocks
     }
 
+    /// Rotate a block
     pub fn rotate_block(&self, block: &mut Block) {
         if self.piece_type == PieceType::O {
             return;
         }
         let inv_x = -block.x;
         block.x = block.y + self.pivot_x;
+        // Trial and error to find the correct formula
         if matches!(self.piece_type, PieceType::L | PieceType::J) {
             block.y = inv_x + self.pivot_y;
         } else {

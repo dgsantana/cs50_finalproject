@@ -97,23 +97,9 @@ pub fn setup_pause_menu(mut commands: Commands) {
                 row.style()
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
-                row.label(LabelConfig::from("Cetris"))
+                row.label(LabelConfig::from("PAUSE MENU"))
                     .style()
                     .font_size(48.0);
-            });
-            column.row(|row| {
-                row.style()
-                    .align_items(AlignItems::Center)
-                    .justify_content(JustifyContent::Center);
-                row.label(LabelConfig::from("by")).style().font_size(24.0);
-            });
-            column.row(|row| {
-                row.style()
-                    .align_items(AlignItems::Center)
-                    .justify_content(JustifyContent::Center);
-                row.label(LabelConfig::from("Daniel Santana"))
-                    .style()
-                    .font_size(24.0);
             });
 
             column
@@ -122,7 +108,7 @@ pub fn setup_pause_menu(mut commands: Commands) {
                         .align_items(AlignItems::Center)
                         .justify_content(JustifyContent::Center);
                     row.spawn((MenuButton::Continue, ButtonBundle::default()))
-                        .label(LabelConfig::from("Continue"))
+                        .label(LabelConfig::from("CONTINUE"))
                         .style()
                         .width(Val::Px(200.0))
                         .font_size(32.0);
@@ -134,7 +120,7 @@ pub fn setup_pause_menu(mut commands: Commands) {
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
                 row.spawn((MenuButton::MainMenu, ButtonBundle::default()))
-                    .label(LabelConfig::from("Return to Menu"))
+                    .label(LabelConfig::from("MAIN MENU"))
                     .style()
                     .width(Val::Px(200.0))
                     .font_size(32.0);
@@ -168,7 +154,7 @@ pub fn setup_gameover_menu(mut commands: Commands) {
                         .align_items(AlignItems::Center)
                         .justify_content(JustifyContent::Center);
                     row.spawn((MenuButton::Restart, ButtonBundle::default()))
-                        .label(LabelConfig::from("Restart"))
+                        .label(LabelConfig::from("RESTART"))
                         .style()
                         .width(Val::Px(200.0))
                         .font_size(32.0);
@@ -180,7 +166,7 @@ pub fn setup_gameover_menu(mut commands: Commands) {
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
                 row.spawn((MenuButton::MainMenu, ButtonBundle::default()))
-                    .label(LabelConfig::from("Return to Menu"))
+                    .label(LabelConfig::from("MAIN MENU"))
                     .style()
                     .width(Val::Px(200.0))
                     .font_size(32.0);
