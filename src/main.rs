@@ -21,6 +21,7 @@ fn main() {
     app.init_state::<AppState>()
         .add_sub_state::<GameState>()
         .enable_state_scoped_entities::<AppState>()
+        .enable_state_scoped_entities::<GameState>()
         .add_plugins((TetrisUIPlugin, TetrisPiecePlugin))
         .add_systems(Startup, (setup_camera, grid::setup))
         .run();

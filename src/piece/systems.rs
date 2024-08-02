@@ -190,12 +190,20 @@ pub fn remove_lines(
 ) {
     let mut lines = [0; 20];
     for (_, block, _) in q_blocks.iter() {
+        // Ignore blocks that are out of the board
+        if block.y() < 0 || block.y() >= 20 {
+            continue;
+        }
         lines[block.y() as usize] += 1;
     }
 
     // We use a BTreeSet to keep the lines removed sorted and unique
     let mut removed_lines = BTreeSet::new();
     for (entity, block, _) in q_blocks.iter() {
+        // Ignore blocks that are out of the board
+        if block.y() < 0 || block.y() >= 20 {
+            continue;
+        }
         if lines[block.y() as usize] == 10 {
             removed_lines.insert(block.y());
             commands.entity(entity).despawn_recursive();
