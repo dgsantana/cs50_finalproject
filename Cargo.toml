@@ -1,9 +1,12 @@
 [package]
-name = "crazy_tetris"
-authors = ["Daniel Santana  <danielgsantana@gmail.com>"]
-version = "0.1.0"
-edition = "2021"
+authors     = ["Daniel Santana  <danielgsantana@gmail.com>"]
+description = "A tetris game with a twist made with Bevy"
+edition     = "2021"
+name        = "crazy_tetris"
+version     = "0.1.0"
 
 [dependencies]
-bevy = "0.14"
-rand = "0.8"
+bevy                = "0.14"
+bevy-inspector-egui = "0.25"
+rand                = "0.8"
+sickle_ui           = "0.2"

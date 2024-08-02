@@ -1,16 +1,15 @@
 use bevy::prelude::*;
 
-use crate::common::{BLOCK_SIZE, BOARD_X, BOARD_Y, BORDER_COLOR, BORDER_SIZE};
+use crate::common::{BLOCK_SIZE, BOARD_COLS, BOARD_ROWS, BORDER_COLOR, BORDER_SIZE};
 
 pub fn setup(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
-    let half_x = BOARD_X as f32 / 2.0;
-    let half_y = BOARD_Y as f32 / 2.0;
+    let half_x = BOARD_COLS as f32 / 2.0;
+    let half_y = BOARD_ROWS as f32 / 2.0;
     // Lots of trial and error to get the cup to look right
     let side = half_x * BLOCK_SIZE - BORDER_SIZE / 2.0;
     let bottom = half_y * BLOCK_SIZE + BORDER_SIZE;
-    let size_y = BOARD_Y as f32 * BLOCK_SIZE + 2.0 * BORDER_SIZE;
-    let size_x = BOARD_X as f32 * BLOCK_SIZE;
+    let size_y = BOARD_ROWS as f32 * BLOCK_SIZE + 2.0 * BORDER_SIZE;
+    let size_x = BOARD_COLS as f32 * BLOCK_SIZE;
     // Draw the cup
     commands.spawn(SpriteBundle {
         transform: Transform::from_xyz(-side, 0.0, 0.0).with_scale(Vec3::new(
