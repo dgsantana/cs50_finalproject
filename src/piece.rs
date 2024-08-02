@@ -43,13 +43,15 @@ impl Plugin for TetrisPiecePlugin {
             )
             .add_systems(
                 Update,
-                systems::auto_move_down
+                (systems::manual_move, systems::auto_move_down)
+                    .chain()
                     .in_set(TetrisSet::Movement)
                     .run_if(in_state(GameState::Play)),
             )
             .add_systems(
                 Update,
-                systems::check_collision
+                (systems::collisions_check, systems::game_over_check)
+                    .chain()
                     .in_set(TetrisSet::Collision)
                     .run_if(in_state(GameState::Play)),
             )

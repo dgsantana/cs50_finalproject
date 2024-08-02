@@ -11,6 +11,9 @@ use super::components::{PieceType, PIECES};
 pub struct MoveDownTimer(pub Timer);
 
 #[derive(Resource)]
+pub struct ManualMoveTimer(pub Timer);
+
+#[derive(Resource)]
 pub struct PiecesQueue(VecDeque<PieceType>);
 
 impl PiecesQueue {

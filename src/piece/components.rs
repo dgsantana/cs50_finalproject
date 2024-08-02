@@ -32,6 +32,10 @@ impl Block {
         self.y = y;
     }
 
+    pub fn rotate(&mut self) {
+        std::mem::swap(&mut self.x, &mut self.y);
+    }
+
     pub fn x(&self) -> i32 {
         self.x
     }
@@ -110,7 +114,7 @@ pub fn select_piece(piece_type: PieceType) -> [Block; 4] {
     }
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Movable {
     pub down: bool,
     pub left: bool,
@@ -132,6 +136,10 @@ impl Movable {
         self.right = false;
     }
 
+    pub fn can_rotate(&self) -> bool {
+        self.down && self.left && self.right
+    }
+
     pub fn can_move_down(&self) -> bool {
         self.down
     }
@@ -150,7 +158,6 @@ pub struct PieceBundle {
     sprite: SpriteBundle,
     block: Block,
     piece_type: PieceType,
-    movable: Movable,
 }
 
 impl From<PieceType> for [[i32; 2]; 4] {
@@ -209,11 +216,6 @@ impl PieceType {
                     },
                     block: *block,
                     piece_type: *self,
-                    movable: Movable {
-                        down: true,
-                        left: true,
-                        right: true,
-                    },
                 })
                 .insert(StateScoped(AppState::GameState));
         }
