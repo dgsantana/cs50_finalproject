@@ -9,9 +9,13 @@ use crate::state::{AppState, GameState};
 
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum TetrisSet {
+    // The piece is spawned
     Spawn,
+    // The piece is moved
     Movement,
+    // The piece is checked for collisions, removed lines, and game over
     Collision,
+    // The piece visibility is controlled to avoid rendering it when it is out of the screen
     Visibility,
 }
 
@@ -43,14 +47,18 @@ impl Plugin for TetrisPiecePlugin {
             )
             .add_systems(
                 Update,
-                (systems::manual_move, systems::auto_move_down)
+                (systems::rotate_piece, systems::move_piece)
                     .chain()
                     .in_set(TetrisSet::Movement)
                     .run_if(in_state(GameState::Play)),
             )
             .add_systems(
                 Update,
-                (systems::collisions_check, systems::game_over_check)
+                (
+                    systems::collisions_check,
+                    systems::remove_lines,
+                    systems::game_over_check,
+                )
                     .chain()
                     .in_set(TetrisSet::Collision)
                     .run_if(in_state(GameState::Play)),

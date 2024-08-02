@@ -32,16 +32,16 @@ impl Block {
         self.y = y;
     }
 
-    pub fn rotate(&mut self) {
-        std::mem::swap(&mut self.x, &mut self.y);
-    }
-
     pub fn x(&self) -> i32 {
         self.x
     }
 
     pub fn y(&self) -> i32 {
         self.y
+    }
+
+    pub fn shift_y(&mut self, shift: i32) {
+        self.y += shift;
     }
 
     pub fn as_translation(&self) -> Vec3 {
@@ -68,6 +68,7 @@ pub enum PieceType {
     T,
     Z,
 }
+
 
 // Define the pieces as a 2D array of 4 2D coordinates
 // x 3 4 5 6
@@ -122,6 +123,7 @@ pub struct Movable {
 }
 
 impl Movable {
+    /// Create a new Movable struct with all the movements enabled
     pub fn new() -> Self {
         Self {
             down: true,
@@ -130,24 +132,24 @@ impl Movable {
         }
     }
 
-    pub fn disable_all(&mut self) {
-        self.down = false;
-        self.left = false;
-        self.right = false;
-    }
-
+    /// Check if the piece can rotate
+    /// 
+    /// All the movements should be enabled for rotation
     pub fn can_rotate(&self) -> bool {
         self.down && self.left && self.right
     }
 
+    /// Check if the piece can move down
     pub fn can_move_down(&self) -> bool {
         self.down
     }
 
+    /// Check if the piece can move left
     pub fn can_move_left(&self) -> bool {
         self.left
     }
 
+    /// Check if the piece can move right
     pub fn can_move_right(&self) -> bool {
         self.right
     }
@@ -218,6 +220,75 @@ impl PieceType {
                     piece_type: *self,
                 })
                 .insert(StateScoped(AppState::GameState));
+        }
+    }
+}
+
+pub struct Piece {
+    piece_type: PieceType,
+    blocks: [Block; 4],
+    pivot_x: i32,
+    pivot_y: i32,
+}
+
+impl Piece {
+    /// Create a new piece from an array of blocks
+    pub fn from_array(q_blocks: &[Block], piece_type: PieceType) -> Self {
+        let mut blocks = [Block::new(0, 0); 4];
+        for (i, block) in q_blocks.iter().enumerate() {
+            blocks[i] = *block;
+        }
+        let mut result = Self {
+            piece_type,
+            blocks,
+            pivot_x: 0,
+            pivot_y: 0,
+        };
+        result.compute();
+        result
+    }
+
+    pub fn blocks(&self) -> [Block; 4] {
+        self.blocks
+    }
+
+    /// Compute the pivot and if the piece is rotated
+    fn compute(&mut self) {
+        let sum_x: i32 = self.blocks.iter().map(|b| b.x).sum();
+        let sum_y: i32 = self.blocks.iter().map(|b| b.y).sum();
+        self.pivot_x = sum_x / 4 - sum_y / 4;
+        self.pivot_y = sum_x / 4 + sum_y / 4;
+    }
+
+    /// Rotation is tricky, the pivot should be the first block, and then move the rest of the blocks
+    /// around it. Also, the rotation should be done in a 2D array, and then the blocks should be updated
+    /// with the new coordinates.
+    ///
+    /// The O piece should not rotate.
+    ///
+    /// The first block is the far leftmost block, and the rest of the blocks are rotated around it.
+    /// For example on Z we pass from [[3, 1], [4, 1], [4, 0], [5, 0]] to [[3,1], [3,0], [2,0], [2,-1]]
+    pub fn rotate_blocks(&self) -> [Block; 4] {
+        let mut blocks = self.blocks;
+        if self.piece_type == PieceType::O {
+            return blocks;
+        }
+        blocks.iter_mut().for_each(|block| {
+            self.rotate_block(block);
+        });
+        blocks
+    }
+
+    pub fn rotate_block(&self, block: &mut Block) {
+        if self.piece_type == PieceType::O {
+            return;
+        }
+        let inv_x = -block.x;
+        block.x = block.y + self.pivot_x;
+        if matches!(self.piece_type, PieceType::L | PieceType::J) {
+            block.y = inv_x + self.pivot_y;
+        } else {
+            block.y = inv_x + self.pivot_y + 1;
         }
     }
 }
