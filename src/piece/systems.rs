@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 
 use bevy::prelude::*;
 
-use crate::{common::VISIBILITY_LIMIT_Y, state::GameState};
+use crate::{common::VISIBILITY_LIMIT_Y, state::GameState, stats::{NextPieceEvent, Score, ScoreEvent}};
 
 use super::{
     components::{Block, Movable, Piece, PieceType},
@@ -28,9 +28,14 @@ pub fn add_piece(
     mut commands: Commands,
     query: Query<&PieceType>,
     mut pieces: ResMut<PiecesQueue>,
+    mut next_piece_event: EventWriter<NextPieceEvent>,
 ) {
     if query.is_empty() {
         pieces.next().build(&mut commands);
+        let Some(next) = pieces.peek() else {
+            return;
+        };
+        next_piece_event.send(NextPieceEvent(*next));
     }
 }
 
@@ -96,6 +101,7 @@ pub fn move_piece(
     }
 }
 
+/// System to rotate the piece
 pub fn rotate_piece(
     q_static_blocks: Query<&Block, Without<PieceType>>,
     mut q_moveable_blocks: Query<(&mut Block, &mut Transform, &PieceType), With<PieceType>>,
@@ -187,6 +193,7 @@ pub fn collisions_check(
 pub fn remove_lines(
     mut commands: Commands,
     mut q_blocks: Query<(Entity, &mut Block, &mut Transform), Without<PieceType>>,
+    mut score_event: EventWriter<ScoreEvent>,
 ) {
     let mut lines = [0; 20];
     for (_, block, _) in q_blocks.iter() {
@@ -209,6 +216,22 @@ pub fn remove_lines(
             commands.entity(entity).despawn_recursive();
         }
     }
+
+    if removed_lines.is_empty() {
+        return;
+    }
+
+    let lines = removed_lines.len() as u64;
+    let score = match lines {
+        1 => 40,
+        2 => 100,
+        3 => 300,
+        4 => 1200,
+        _ => 0,
+    };
+
+    score_event.send(ScoreEvent(Score { value: score, lines }));
+
 
     // Move blocks above the removed lines down
     for (_, mut block, mut transform) in q_blocks.iter_mut() {

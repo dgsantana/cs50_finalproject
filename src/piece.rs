@@ -3,9 +3,10 @@ mod resources;
 mod systems;
 
 use bevy::prelude::*;
-use components::{Block, PieceType};
 
 use crate::state::{AppState, GameState};
+
+pub use components::{Block, PieceType};
 
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum TetrisSet {

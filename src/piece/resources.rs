@@ -66,4 +66,8 @@ impl PiecesQueue {
         }
         self.0.pop_front().unwrap()
     }
+
+    pub fn peek(&self) -> Option<&PieceType> {
+        self.0.front()
+    }
 }
