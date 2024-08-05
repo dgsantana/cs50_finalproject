@@ -37,7 +37,7 @@ pub fn setup_main_menu(mut commands: Commands) {
                 row.style()
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
-                row.label(LabelConfig::from("Cetris"))
+                row.label(LabelConfig::from("TETRIS"))
                     .style()
                     .font_size(48.0);
             });
@@ -61,11 +61,21 @@ pub fn setup_main_menu(mut commands: Commands) {
                     row.style()
                         .align_items(AlignItems::Center)
                         .justify_content(JustifyContent::Center);
-                    row.spawn((MenuButton::Play, ButtonBundle::default()))
-                        .label(LabelConfig::from("Play"))
-                        .style()
-                        .width(Val::Px(200.0))
-                        .font_size(32.0);
+                    row.spawn((
+                        MenuButton::Play,
+                        ButtonBundle {
+                            style: Style {
+                                width: Val::Px(200.0),
+                                margin: UiRect::all(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                ..Default::default()
+                            },
+                            ..Default::default()
+                        },
+                    ))
+                    .label(LabelConfig::from("PLAY"))
+                    .style()
+                    .font_size(32.0);
                 })
                 .style()
                 .padding(UiRect::top(Val::Percent(15.0)));
@@ -73,11 +83,21 @@ pub fn setup_main_menu(mut commands: Commands) {
                 row.style()
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
-                row.spawn((MenuButton::Quit, ButtonBundle::default()))
-                    .label(LabelConfig::from("Quit"))
-                    .style()
-                    .width(Val::Px(200.0))
-                    .font_size(32.0);
+                row.spawn((
+                    MenuButton::Quit,
+                    ButtonBundle {
+                        style: Style {
+                            width: Val::Px(200.0),
+                            margin: UiRect::all(Val::Px(10.0)),
+                            justify_content: JustifyContent::Center,
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                ))
+                .label(LabelConfig::from("QUIT"))
+                .style()
+                .font_size(32.0);
             });
         })
         .style()
@@ -86,7 +106,7 @@ pub fn setup_main_menu(mut commands: Commands) {
         .align_items(AlignItems::Center)
         .justify_content(JustifyContent::Center)
         .entity_commands()
-        .insert(StateScoped(AppState::MainMenu));
+        .insert((StateScoped(AppState::MainMenu), Name::new("MainMenu")));
 }
 
 pub fn setup_pause_menu(mut commands: Commands) {
@@ -107,11 +127,21 @@ pub fn setup_pause_menu(mut commands: Commands) {
                     row.style()
                         .align_items(AlignItems::Center)
                         .justify_content(JustifyContent::Center);
-                    row.spawn((MenuButton::Continue, ButtonBundle::default()))
-                        .label(LabelConfig::from("CONTINUE"))
-                        .style()
-                        .width(Val::Px(200.0))
-                        .font_size(32.0);
+                    row.spawn((
+                        MenuButton::Continue,
+                        ButtonBundle {
+                            style: Style {
+                                width: Val::Px(200.0),
+                                margin: UiRect::all(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                ..Default::default()
+                            },
+                            ..Default::default()
+                        },
+                    ))
+                    .label(LabelConfig::from("CONTINUE"))
+                    .style()
+                    .font_size(32.0);
                 })
                 .style()
                 .padding(UiRect::top(Val::Percent(15.0)));
@@ -119,11 +149,21 @@ pub fn setup_pause_menu(mut commands: Commands) {
                 row.style()
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
-                row.spawn((MenuButton::MainMenu, ButtonBundle::default()))
-                    .label(LabelConfig::from("MAIN MENU"))
-                    .style()
-                    .width(Val::Px(200.0))
-                    .font_size(32.0);
+                row.spawn((
+                    MenuButton::MainMenu,
+                    ButtonBundle {
+                        style: Style {
+                            width: Val::Px(200.0),
+                            margin: UiRect::all(Val::Px(10.0)),
+                            justify_content: JustifyContent::Center,
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                ))
+                .label(LabelConfig::from("MAIN MENU"))
+                .style()
+                .font_size(32.0);
             });
         })
         .style()
@@ -132,7 +172,7 @@ pub fn setup_pause_menu(mut commands: Commands) {
         .align_items(AlignItems::Center)
         .justify_content(JustifyContent::Center)
         .entity_commands()
-        .insert(StateScoped(GameState::Pause));
+        .insert((StateScoped(GameState::Pause), Name::new("PauseMenu")));
 }
 
 pub fn setup_gameover_menu(mut commands: Commands) {
@@ -153,11 +193,21 @@ pub fn setup_gameover_menu(mut commands: Commands) {
                     row.style()
                         .align_items(AlignItems::Center)
                         .justify_content(JustifyContent::Center);
-                    row.spawn((MenuButton::Restart, ButtonBundle::default()))
-                        .label(LabelConfig::from("RESTART"))
-                        .style()
-                        .width(Val::Px(200.0))
-                        .font_size(32.0);
+                    row.spawn((
+                        MenuButton::Restart,
+                        ButtonBundle {
+                            style: Style {
+                                width: Val::Px(200.0),
+                                margin: UiRect::all(Val::Px(10.0)),
+                                justify_content: JustifyContent::Center,
+                                ..Default::default()
+                            },
+                            ..Default::default()
+                        },
+                    ))
+                    .label(LabelConfig::from("RESTART"))
+                    .style()
+                    .font_size(32.0);
                 })
                 .style()
                 .padding(UiRect::top(Val::Percent(15.0)));
@@ -165,11 +215,21 @@ pub fn setup_gameover_menu(mut commands: Commands) {
                 row.style()
                     .align_items(AlignItems::Center)
                     .justify_content(JustifyContent::Center);
-                row.spawn((MenuButton::MainMenu, ButtonBundle::default()))
-                    .label(LabelConfig::from("MAIN MENU"))
-                    .style()
-                    .width(Val::Px(200.0))
-                    .font_size(32.0);
+                row.spawn((
+                    MenuButton::MainMenu,
+                    ButtonBundle {
+                        style: Style {
+                            width: Val::Px(200.0),
+                            margin: UiRect::all(Val::Px(10.0)),
+                            justify_content: JustifyContent::Center,
+                            ..Default::default()
+                        },
+                        ..Default::default()
+                    },
+                ))
+                .label(LabelConfig::from("MAIN MENU"))
+                .style()
+                .font_size(32.0);
             });
         })
         .style()
@@ -178,7 +238,7 @@ pub fn setup_gameover_menu(mut commands: Commands) {
         .align_items(AlignItems::Center)
         .justify_content(JustifyContent::Center)
         .entity_commands()
-        .insert(StateScoped(GameState::GameOver));
+        .insert((StateScoped(GameState::GameOver), Name::new("GameOverMenu")));
 }
 
 fn handle_buttons(

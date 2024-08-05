@@ -227,7 +227,8 @@ fn update_stats(
 
     // Decrease the speed of drop at every 500 score, making the drop faster up to 0.05s
     // Using i32 div will make the score work as a step function
-    let new_duration = Duration::from_secs_f32((1.0 - (score.value / 500) as f32 * 0.1).max(0.05));
+    let level = score.value / 500;
+    let new_duration = Duration::from_secs_f32((1.0 - level as f32 * 0.1).max(0.05));
     if drop_timer.0.duration() > new_duration {
         drop_timer.0.set_duration(new_duration);
         drop_timer.0.reset();

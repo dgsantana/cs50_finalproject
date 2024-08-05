@@ -2,7 +2,11 @@ use std::collections::BTreeSet;
 
 use bevy::prelude::*;
 
-use crate::{common::VISIBILITY_LIMIT_Y, state::GameState, stats::{NextPieceEvent, Score, ScoreEvent}};
+use crate::{
+    common::VISIBILITY_LIMIT_Y,
+    state::GameState,
+    stats::{NextPieceEvent, Score, ScoreEvent},
+};
 
 use super::{
     components::{Block, Movable, Piece, PieceType},
@@ -68,17 +72,22 @@ pub fn move_piece(
             .iter()
             .map(|(b, _, _)| *b)
             .collect::<Vec<_>>();
-        let moveable = valid_move(&blocks, &q_static_blocks);
+        let mut moveable = valid_move(&blocks, &q_static_blocks);
 
         // If is auto move, we only move down and ignore the rest
-        if auto {
+        let mut move_down = false;
+        if auto && moveable.can_move_down() {
+            move_down = true;
             for (mut block, mut transform, _) in q_moveable_blocks.iter_mut() {
-                if moveable.can_move_down() {
-                    block.move_down();
-                    transform.translation = block.as_board_translation();
-                }
+                block.move_down();
+                transform.translation = block.as_board_translation();
             }
-            return;
+            // Update collisions
+            let blocks = q_moveable_blocks
+                .iter()
+                .map(|(b, _, _)| *b)
+                .collect::<Vec<_>>();
+            moveable = valid_move(&blocks, &q_static_blocks);
         }
 
         for (mut block, mut transform, _) in q_moveable_blocks.iter_mut() {
@@ -89,7 +98,10 @@ pub fn move_piece(
             } else if keyboard_input.pressed(KeyCode::ArrowRight) && moveable.can_move_right() {
                 block.move_right();
                 moved = true;
-            } else if keyboard_input.pressed(KeyCode::ArrowDown) && moveable.can_move_down() {
+            } else if keyboard_input.pressed(KeyCode::ArrowDown)
+                && moveable.can_move_down()
+                && !move_down
+            {
                 block.move_down();
                 moved = true;
             }
@@ -118,7 +130,7 @@ pub fn rotate_piece(
         };
         let piece = Piece::from_array(&blocks, *piece_type);
         let rotate_blocks = piece.rotate_blocks();
-        let can_rotate = valid_move(&rotate_blocks, &q_static_blocks).can_rotate();
+        let can_rotate = valid_rotation(&rotate_blocks, &q_static_blocks).can_rotate();
 
         for (mut block, mut transform, _) in q_moveable_blocks.iter_mut() {
             if can_rotate {
@@ -149,6 +161,37 @@ fn valid_move(blocks: &[Block], q_static_blocks: &Query<&Block, Without<PieceTyp
             moveable.left = false;
         }
         if block.x() == 9
+            || q_static_blocks
+                .iter()
+                .any(|b| b.x() == block.x() + 1 && b.y() == block.y())
+        {
+            moveable.right = false;
+        }
+    }
+    moveable
+}
+
+fn valid_rotation(
+    blocks: &[Block],
+    q_static_blocks: &Query<&Block, Without<PieceType>>,
+) -> Movable {
+    let mut moveable = Movable::new();
+    for block in blocks.iter() {
+        if block.y() < 0
+            || q_static_blocks
+                .iter()
+                .any(|b| b.y() == block.y() - 1 && b.x() == block.x())
+        {
+            moveable.down = false;
+        }
+        if block.x() < 0
+            || q_static_blocks
+                .iter()
+                .any(|b| b.x() == block.x() - 1 && b.y() == block.y())
+        {
+            moveable.left = false;
+        }
+        if block.x() > 9
             || q_static_blocks
                 .iter()
                 .any(|b| b.x() == block.x() + 1 && b.y() == block.y())
@@ -230,8 +273,10 @@ pub fn remove_lines(
         _ => 0,
     };
 
-    score_event.send(ScoreEvent(Score { value: score, lines }));
-
+    score_event.send(ScoreEvent(Score {
+        value: score,
+        lines,
+    }));
 
     // Move blocks above the removed lines down
     for (_, mut block, mut transform) in q_blocks.iter_mut() {

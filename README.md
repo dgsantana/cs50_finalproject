@@ -1,4 +1,4 @@
 # Crazy Tetris
-#### Video Demo:  <URL HERE>
+#### Video Demo: <URL HERE>
 #### Description:
-A classic tetris game with a twist, good and bad power-ups that may or may not help you :D. Developed on my favorite language Rust.
+A classic tetris game that increases fall speed as scores get higher. Developed on my favorite language Rust, using an ECS framework called Bevy.

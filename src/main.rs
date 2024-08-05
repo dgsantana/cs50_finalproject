@@ -22,7 +22,8 @@ fn main() {
     #[cfg(debug_assertions)]
     app.add_plugins(WorldInspectorPlugin::default());
 
-    app.init_state::<AppState>()
+    app.insert_resource(ClearColor(Color::BLACK))
+        .init_state::<AppState>()
         .add_sub_state::<GameState>()
         .enable_state_scoped_entities::<AppState>()
         .enable_state_scoped_entities::<GameState>()
