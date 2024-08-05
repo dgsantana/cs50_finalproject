@@ -75,7 +75,7 @@ pub fn move_piece(
             for (mut block, mut transform, _) in q_moveable_blocks.iter_mut() {
                 if moveable.can_move_down() {
                     block.move_down();
-                    transform.translation = block.as_translation();
+                    transform.translation = block.as_board_translation();
                 }
             }
             return;
@@ -95,7 +95,7 @@ pub fn move_piece(
             }
 
             if moved {
-                transform.translation = block.as_translation();
+                transform.translation = block.as_board_translation();
             }
         }
     }
@@ -124,7 +124,7 @@ pub fn rotate_piece(
             if can_rotate {
                 // Use our helper to do the rotation.
                 piece.rotate_block(&mut block);
-                transform.translation = block.as_translation();
+                transform.translation = block.as_board_translation();
             }
         }
     }
@@ -244,7 +244,7 @@ pub fn remove_lines(
         }
         if offset > 0 {
             block.shift_y(-offset);
-            transform.translation = block.as_translation();
+            transform.translation = block.as_board_translation();
         }
     }
 }

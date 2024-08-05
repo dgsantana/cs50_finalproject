@@ -45,15 +45,24 @@ impl Block {
     }
 
     pub fn as_translation(&self) -> Vec3 {
+        Vec3::new(self.x as f32 * BLOCK_SIZE, self.y as f32 * BLOCK_SIZE, 0.0)
+    }
+
+    pub fn as_transform(&self) -> Transform {
+        Transform::from_translation(self.as_translation())
+            .with_scale(Vec3::splat(BLOCK_SPRITE_SIZE))
+    }
+
+    pub fn as_board_translation(&self) -> Vec3 {
         Vec3::new(
             (self.x as f32 - BOARD_CENTER_X + 0.5) * BLOCK_SIZE,
             (self.y as f32 - BOARD_CENTER_Y + 0.5) * BLOCK_SIZE,
             0.0,
         )
     }
-    pub fn as_transform(&self) -> Transform {
+    pub fn as_board_transform(&self) -> Transform {
         // The origin is the center top of the board
-        Transform::from_translation(self.as_translation())
+        Transform::from_translation(self.as_board_translation())
             .with_scale(Vec3::splat(BLOCK_SPRITE_SIZE))
     }
 }
@@ -68,7 +77,6 @@ pub enum PieceType {
     T,
     Z,
 }
-
 
 // Define the pieces as a 2D array of 4 2D coordinates
 // x 3 4 5 6
@@ -133,7 +141,7 @@ impl Movable {
     }
 
     /// Check if the piece can rotate
-    /// 
+    ///
     /// All the movements should be enabled for rotation
     pub fn can_rotate(&self) -> bool {
         self.down && self.left && self.right
@@ -207,18 +215,21 @@ impl PieceType {
         for block in blocks.iter_mut() {
             block.y += 20;
             commands
-                .spawn(PieceBundle {
-                    sprite: SpriteBundle {
-                        sprite: Sprite {
-                            color: self.into(),
+                .spawn((
+                    PieceBundle {
+                        sprite: SpriteBundle {
+                            sprite: Sprite {
+                                color: self.into(),
+                                ..Default::default()
+                            },
+                            transform: block.as_board_transform(),
                             ..Default::default()
                         },
-                        transform: block.as_transform(),
-                        ..Default::default()
+                        block: *block,
+                        piece_type: *self,
                     },
-                    block: *block,
-                    piece_type: *self,
-                })
+                    Name::new(format!("{:?}", self)),
+                ))
                 .insert(StateScoped(AppState::GameState));
         }
     }

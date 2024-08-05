@@ -6,7 +6,8 @@ use bevy::prelude::*;
 
 use crate::state::{AppState, GameState};
 
-pub use components::{Block, PieceType};
+pub use components::{select_piece, Block, PieceType};
+pub use resources::MoveDownTimer;
 
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum TetrisSet {
@@ -38,6 +39,13 @@ impl Plugin for TetrisPiecePlugin {
             )
             .add_systems(
                 OnEnter(AppState::GameState),
+                (systems::setup_game, systems::clear_pieces),
+            )
+            .add_systems(
+                OnTransition {
+                    entered: GameState::Play,
+                    exited: GameState::GameOver,
+                },
                 (systems::setup_game, systems::clear_pieces),
             )
             .add_systems(

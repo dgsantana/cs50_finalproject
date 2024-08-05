@@ -48,7 +48,7 @@ impl PiecesQueue {
                 break;
             }
         }
-        info!("Generated pieces: {:?}", pieces);
+        debug!("Generated pieces: {:?}", pieces);
 
         // Add the pieces to the queue
         self.0.extend(pieces);
